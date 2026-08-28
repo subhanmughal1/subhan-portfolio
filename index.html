@@ -52,30 +52,11 @@
   body::after {
     content: '';
     position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     pointer-events: none; opacity: 0.4; z-index: -1; mix-blend-mode: overlay;
   }
   a { color: inherit; text-decoration: none; }
   ::selection { background: var(--accent); color: #0d0d0d; }
-
-  /* App loading state — shown until React hydrates */
-  #boot {
-    position: fixed; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--bg);
-    z-index: 999;
-    transition: opacity 0.4s ease;
-  }
-  #boot.hide { opacity: 0; pointer-events: none; }
-  #boot .b-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent);
-    animation: bootpulse 1.2s ease-in-out infinite;
-  }
-  @keyframes bootpulse {
-    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.1); }
-  }
 
   .container { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
   @media (max-width: 640px) { .container { padding: 0 20px; } }
@@ -378,275 +359,71 @@
 
 <body>
 
-<!-- Boot loading screen, hidden once React mounts -->
-<div id="boot"><div class="b-dot"></div></div>
+<header>
+  <div class="container nav">
+    <div class="brand"><span class="dot"></span><span>Muhammad Subhan</span></div>
+    <nav class="nav-links">
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#work">work</a>
+      <a href="#projects">projects</a>
+      <a href="#contact">contact</a>
+    </nav>
+  </div>
+</header>
 
-<div id="root"></div>
+<main>
 
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-<script type="text/babel" data-presets="env,react">
-const { useEffect, useRef, useState } = React;
-
-// ============================================================
-// DATA — driven from CV
-// ============================================================
-const CV_FILE = './cv/Muhammad_Subhan_CV.pdf';
-
-const NAV_LINKS = [
-  { href: '#about', label: 'about' },
-  { href: '#skills', label: 'skills' },
-  { href: '#work', label: 'work' },
-  { href: '#projects', label: 'projects' },
-  { href: '#contact', label: 'contact' },
-];
-
-const META_STRIP = [
-  { label: 'Role', value: 'Full Stack Developer' },
-  { label: 'Company', value: 'Mozzine Technologies' },
-  { label: 'Location', value: 'Narowal, Pakistan' },
-  { label: 'Focus', value: 'AI · Backend · Automation' },
-];
-
-const SPECIALTIES = [
-  'FastAPI & REST APIs',
-  'RAG & vector search',
-  'LangChain & LangGraph',
-  'n8n workflow automation',
-  'ZKTeco biometric integration',
-  
-];
-
-const EXPLORING = [
-  'Multi-agent orchestration',
-  'LangSmith evaluations',
-  'Production RAG observability',
-];
-
-const SKILLS = [
-  {
-    title: 'AI & LLM Technologies',
-    featured: true,
-    primary: ['LangChain', 'LangGraph', 'RAG Pipelines'],
-    tags: ['Vector Databases', 'Claude AI', 'OpenAI APIs'],
-  },
-  {
-    title: 'Backend',
-    primary: ['Python', 'FastAPI'],
-    tags: ['Flask', 'REST API', 'PyQt6', 'QThread', 'MVC Architecture', 'Biometric Hardware', 'ZKTeco'],
-  },
-  {
-    title: 'Automation',
-    primary: ['n8n'],
-    tags: ['Workflow Automation', 'AI Agent Pipelines', 'Drag & Drop Automation'],
-  },
-  {
-    title: 'Database',
-    primary: ['SQLite3', 'PostgreSQL', 'Redis', 'Qdrant'],
-    tags: ['Vector Search'],
-  },
-  {
-    title: 'Frontend',
-    primary: [],
-    tags: ['HTML', 'CSS', 'Tailwind CSS', 'Responsive Design'],
-  },
-  {
-    title: 'Tools & Version Control',
-    primary: ['Git', 'GitHub'],
-    tags: ['Postman', 'VS Code', 'Windsurf', 'Claude AI'],
-  },
-];
-
-const EXPERIENCE = {
-  title: 'Full Stack Developer',
-  company: 'Mozzine Technologies · On-site',
-  period: 'Oct 2025 — April 2026',
-  bullets: [
-    { strong: 'Built a desktop biometric attendance application', rest: ' using Python and PyQt6 with MVC architecture, integrating ZKTeco devices and SQLite3 for attendance data processing.' },
-    { strong: 'Built secure FastAPI-based REST APIs', rest: ' for biometric device communication, authentication, and data synchronization.' },
-    { strong: 'Integrated and supported multiple ZKTeco biometric device models', rest: ' — fingerprint, face recognition, palm recognition, and RFID card readers.' },
-    { rest: 'Delivered direct biometric customer support: diagnosed and resolved fingerprint/face recognition errors, device connectivity, enrollment, synchronization failures, and deployment issues for clients.' },
-    { strong: 'Built n8n workflow automations', rest: ' for operational task streamlining and data pipeline orchestration.' },
-    { strong: 'Implemented multi-threaded data sync workers (QThread)', rest: ' for device communication without UI blocking.' },
-  ],
-};
-
-const PROJECT_CATEGORIES = [
-  {
-    title: 'AI RAG Agents & Chatbots',
-    stack: 'Python · FastAPI · Claude AI · n8n · Vector DB',
-    projects: [
-      { name: 'Customer Support RAG Agent', badge: 'RAG', desc: 'Automated query resolution via LLM + vector search over knowledge base documents, triggered through n8n pipelines.' },
-      { name: 'Document Q&A RAG Agent', badge: 'RAG', desc: 'Users upload PDFs and documents to query them in natural language for internal policy lookups and manual searches.' },
-      { name: 'Product Knowledge RAG Bot', badge: 'RAG', desc: 'Trained on product catalogs and FAQs to handle pre-sales and technical queries without human intervention.' },
-      { name: 'Multi-Source RAG Agent', badge: 'RAG', desc: 'Aggregates data from databases, APIs, and documents to answer complex business queries in real time.' },
-      { name: 'Multi-Channel AI Chatbots', badge: 'CHAT', desc: 'General-purpose chatbots with conversation memory deployed across web and WhatsApp channels.' },
-    ],
-  },
- 
-  {
-    title: 'Hardware & Backend Systems',
-    stack: 'Python · PyQt6 · FastAPI · ZKTeco · SQLite3',
-    projects: [
-      { name: 'Biometric Attendance System', badge: 'PROD', desc: 'Production desktop application with ZKTeco fingerprint, face, palm, and RFID integration, MVC architecture, and multi-threaded sync workers.' },
-    ],
-  },
-  {
-    title: 'Python Automation & Domain Bots',
-    stack: 'Python · n8n · LLM APIs',
-    projects: [
-      { name: 'Medical & Healthcare Info Bot', badge: 'RAG', desc: 'RAG agent providing accurate health and medical information from trusted knowledge base sources.' },
-      { name: 'CSS & PPSC Exam Prep Agent', badge: 'EDU', desc: 'Intelligent chatbot helping students prepare for CSS (Central Superior Services) and PPSC exams with topic-wise Q&A and past paper analysis.' },
-      { name: 'Workflow Automation Scripts', badge: 'AUTO', desc: 'Python and n8n automation scripts streamlining repetitive operational tasks and improving workflow efficiency.' },
-    ],
-  },
-];
-
-const EDUCATION = [
-  { degree: 'Bachelor of Science in Computer Science', school: 'University of Narowal (UON)', period: 'Nov 2021 — May 2025' },
-  { degree: 'Intermediate (Pre-Engineering)', school: 'Royal College of Science, Narowal', period: 'May 2018 — Oct 2020' },
-];
-
-const CONTACTS = [
-  { label: 'Email', value: 'subhanmughal931@gmail.com', href: 'mailto:subhanmughal931@gmail.com' },
-  { label: 'WhatsApp', value: '+92 344 8261148', href: 'https://wa.me/923448261148' },
-  { label: 'GitHub', value: '@subhanmughal1', href: 'https://github.com/subhanmughal1' },
-  { label: 'LinkedIn', value: 'in/muhammad-subhan', href: 'https://www.linkedin.com/in/muhammad-subhan-4b2382376/' },
-];
-
-// ============================================================
-// ICONS
-// ============================================================
-const ArrowRight = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 12h14M13 6l6 6-6 6"/>
-  </svg>
-);
-const DownloadIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-    <polyline points="7 10 12 15 17 10"/>
-    <line x1="12" y1="15" x2="12" y2="3"/>
-  </svg>
-);
-const GitHubIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1-.02-1.96-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.69 1.24 3.34.95.1-.74.4-1.24.72-1.53-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.16 1.18A11 11 0 0112 6.8c.97 0 1.95.13 2.86.39 2.2-1.49 3.16-1.18 3.16-1.18.62 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13 0 1.54-.01 2.78-.01 3.16 0 .31.21.68.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/>
-  </svg>
-);
-const LinkedInIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5 1.78 1.78 0 016.5 8.25zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
-  </svg>
-);
-const MailIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-  </svg>
-);
-const ExternalArrow = () => (
-  <svg className="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="7" y1="17" x2="17" y2="7"/>
-    <polyline points="7,7 17,7 17,17"/>
-  </svg>
-);
-
-// ============================================================
-// REVEAL HOOK
-// ============================================================
-function useReveal() {
-  const ref = useRef(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return ref;
-}
-
-const Reveal = ({ children, delay = 0, as: Tag = 'div', className = '', ...rest }) => {
-  const ref = useReveal();
-  const cls = ['reveal', delay ? `reveal-delay-${delay}` : '', className].filter(Boolean).join(' ');
-  return <Tag ref={ref} className={cls} {...rest}>{children}</Tag>;
-};
-
-// ============================================================
-// COMPONENTS
-// ============================================================
-const Header = () => (
-  <header>
-    <div className="container nav">
-      <div className="brand">
-        <span className="dot"></span>
-        <span>Muhammad Subhan</span>
-      </div>
-      <nav className="nav-links">
-        {NAV_LINKS.map(l => <a key={l.href} href={l.href}>{l.label}</a>)}
-      </nav>
-    </div>
-  </header>
-);
-
-const Hero = () => (
-  <section className="hero">
-    <div className="container">
-      <Reveal className="eyebrow"><span className="live"></span> Available for opportunities</Reveal>
-      <Reveal as="h1" delay={1}>
-        Python &amp; <em>AI&nbsp;Automation</em><br/>Engineer.
-      </Reveal>
-      <Reveal as="p" delay={2} className="hero-tagline">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="eyebrow reveal"><span class="live"></span> Available for opportunities</div>
+      <h1 class="reveal reveal-delay-1">Python &amp; <em>AI&nbsp;Automation</em><br/>Engineer.</h1>
+      <p class="hero-tagline reveal reveal-delay-2">
         I build <strong>scalable REST APIs</strong>, <strong>AI-powered RAG systems</strong>,
         and <strong>autonomous agent workflows</strong> using Python, FastAPI, LangChain, and LangGraph —
         with hands-on experience integrating <strong>ZKTeco biometric hardware</strong> in real-world production environments.
-      </Reveal>
-      <Reveal delay={3} className="cta-row">
-        <a href="#projects" className="btn btn-primary">View projects <ArrowRight/></a>
-        <a href={CV_FILE} download="Muhammad_Subhan_CV.pdf" className="btn btn-download">
-          <DownloadIcon/> Download CV
+      </p>
+      <div class="cta-row reveal reveal-delay-3">
+        <a href="#projects" class="btn btn-primary">View projects
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
-        <a href="https://github.com/subhanmughal1" target="_blank" rel="noopener" className="btn"><GitHubIcon/> GitHub</a>
-        <a href="https://www.linkedin.com/in/muhammad-subhan-4b2382376/" target="_blank" rel="noopener" className="btn"><LinkedInIcon/> LinkedIn</a>
-        <a href="mailto:subhanmughal931@gmail.com" className="btn"><MailIcon/> Email</a>
-      </Reveal>
-      <div className="meta-strip">
-        {META_STRIP.map((m, i) => (
-          <Reveal key={m.label} delay={(i % 4) + 1} className="meta-item">
-            <div className="label">{m.label}</div>
-            <div className="value">{m.value}</div>
-          </Reveal>
-        ))}
+        <a href="./cv/Muhammad_Subhan_CV.pdf" download="Muhammad_Subhan_CV.pdf" class="btn btn-download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download CV
+        </a>
+        <a href="https://github.com/subhanmughal1" target="_blank" rel="noopener" class="btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1-.02-1.96-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.69 1.24 3.34.95.1-.74.4-1.24.72-1.53-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.16 1.18A11 11 0 0112 6.8c.97 0 1.95.13 2.86.39 2.2-1.49 3.16-1.18 3.16-1.18.62 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13 0 1.54-.01 2.78-.01 3.16 0 .31.21.68.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+          GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/muhammad-subhan-4b2382376/" target="_blank" rel="noopener" class="btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5 1.78 1.78 0 016.5 8.25zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+          LinkedIn
+        </a>
+        <a href="mailto:subhanmughal931@gmail.com" class="btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email
+        </a>
+      </div>
+      <div class="meta-strip">
+        <div class="meta-item reveal reveal-delay-1"><div class="label">Role</div><div class="value">Full Stack Developer</div></div>
+        <div class="meta-item reveal reveal-delay-2"><div class="label">Company</div><div class="value">Mozzine Technologies</div></div>
+        <div class="meta-item reveal reveal-delay-3"><div class="label">Location</div><div class="value">Narowal, Pakistan</div></div>
+        <div class="meta-item reveal reveal-delay-4"><div class="label">Focus</div><div class="value">AI · Backend · Automation</div></div>
       </div>
     </div>
   </section>
-);
 
-const SectionHead = ({ num, title, em, sub }) => (
-  <Reveal className="section-head">
-    <span className="section-num">{num} —</span>
-    <h2>{title} {em && <em>{em}</em>}</h2>
-    <span className="section-sub">{sub}</span>
-  </Reveal>
-);
-
-const About = () => (
-  <section id="about" className="block">
-    <div className="container">
-      <SectionHead num="01" em="About" sub="who I am" />
-      <div className="about-grid">
-        <Reveal delay={1} className="about-text">
+  <!-- ABOUT -->
+  <section id="about" class="block">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-num">01 —</span>
+        <h2><em>About</em></h2>
+        <span class="section-sub">who I am</span>
+      </div>
+      <div class="about-grid">
+        <div class="about-text reveal reveal-delay-1">
           <p>I'm Muhammad Subhan, a <strong>Python &amp; AI Automation Engineer</strong> based in Narowal, Pakistan.
           I focus on the intersection of intelligent backend systems and real-world hardware — building everything from
           production-grade FastAPI services and biometric integrations to LangChain agent pipelines and n8n automation workflows.</p>
@@ -657,178 +434,267 @@ const About = () => (
           and multi-source business intelligence.</p>
           <p>If you're building something that needs reliable backend systems, agentic AI, or hardware-software
           integration — <strong>let's talk</strong>.</p>
-        </Reveal>
-        <Reveal as="aside" delay={2} className="about-side">
-          <div className="label">Specialties</div>
-          <ul>{SPECIALTIES.map(s => <li key={s}>{s}</li>)}</ul>
-          <div className="label">Currently exploring</div>
-          <ul>{EXPLORING.map(s => <li key={s}>{s}</li>)}</ul>
-        </Reveal>
-      </div>
-    </div>
-  </section>
-);
-
-const SkillCard = ({ skill, delay }) => (
-  <Reveal delay={delay} className={'skill-card' + (skill.featured ? ' featured' : '')}>
-    <h3>{skill.title}</h3>
-    <div className="skill-tags">
-      {skill.primary.map(t => <span key={t} className="skill-tag primary">{t}</span>)}
-      {skill.tags.map(t => <span key={t} className="skill-tag">{t}</span>)}
-    </div>
-  </Reveal>
-);
-
-const Skills = () => (
-  <section id="skills" className="block">
-    <div className="container">
-      <SectionHead num="02" title="Technical" em="stack" sub="tools I work with" />
-      <div className="skills-grid">
-        {SKILLS.map((s, i) => <SkillCard key={s.title} skill={s} delay={Math.floor(i/2) + 1} />)}
-      </div>
-    </div>
-  </section>
-);
-
-const Experience = () => (
-  <section id="work" className="block">
-    <div className="container">
-      <SectionHead num="03" title="Work" em="experience" sub="where I've shipped" />
-      <Reveal delay={1} className="exp-card">
-        <div className="exp-header">
-          <div>
-            <div className="exp-title">{EXPERIENCE.title}</div>
-            <div className="exp-company">{EXPERIENCE.company}</div>
-          </div>
-          <div className="exp-period">{EXPERIENCE.period}</div>
         </div>
-        <ul className="exp-bullets">
-          {EXPERIENCE.bullets.map((b, i) => (
-            <li key={i}>{b.strong && <strong>{b.strong}</strong>}{b.rest}</li>
-          ))}
-        </ul>
-      </Reveal>
+        <aside class="about-side reveal reveal-delay-2">
+          <div class="label">Specialties</div>
+          <ul>
+            <li>FastAPI &amp; REST APIs</li>
+            <li>RAG &amp; vector search</li>
+            <li>LangChain &amp; LangGraph</li>
+            <li>n8n workflow automation</li>
+            <li>ZKTeco biometric integration</li>
+          </ul>
+          <div class="label">Currently exploring</div>
+          <ul>
+            <li>Multi-agent orchestration</li>
+            <li>LangSmith evaluations</li>
+            <li>Production RAG observability</li>
+          </ul>
+        </aside>
+      </div>
     </div>
   </section>
-);
 
-const ProjectCard = ({ p }) => (
-  <div className="proj-card">
-    <div className="proj-name">{p.name} <span className="proj-badge">{p.badge}</span></div>
-    <p className="proj-desc">{p.desc}</p>
-  </div>
-);
-
-const Projects = () => (
-  <section id="projects" className="block">
-    <div className="container">
-      <SectionHead num="04" title="Selected" em="projects" sub="things I've built" />
-      {PROJECT_CATEGORIES.map((cat, i) => (
-        <Reveal key={cat.title} delay={i + 1} className="proj-category">
-          <h3 className="proj-cat-head">{cat.title}</h3>
-          <div className="proj-cat-stack">{cat.stack}</div>
-          <div className="proj-grid">
-            {cat.projects.map(p => <ProjectCard key={p.name} p={p} />)}
+  <!-- SKILLS -->
+  <section id="skills" class="block">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-num">02 —</span>
+        <h2>Technical <em>stack</em></h2>
+        <span class="section-sub">tools I work with</span>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-card featured reveal reveal-delay-1">
+          <h3>AI &amp; LLM Technologies</h3>
+          <div class="skill-tags">
+            <span class="skill-tag primary">LangChain</span>
+            <span class="skill-tag primary">LangGraph</span>
+            <span class="skill-tag primary">RAG Pipelines</span>
+            <span class="skill-tag">Vector Databases</span>
+            <span class="skill-tag">Claude AI</span>
+            <span class="skill-tag">OpenAI APIs</span>
           </div>
-        </Reveal>
-      ))}
-    </div>
-  </section>
-);
-
-const Education = () => (
-  <section id="education" className="block">
-    <div className="container">
-      <SectionHead num="05" em="Education" sub="academic background" />
-      <div className="edu-list">
-        {EDUCATION.map((e, i) => (
-          <Reveal key={e.degree} delay={i + 1} className="edu-item">
-            <div>
-              <div className="edu-degree">{e.degree}</div>
-              <div className="edu-school">{e.school}</div>
-            </div>
-            <div className="edu-period">{e.period}</div>
-          </Reveal>
-        ))}
+        </div>
+        <div class="skill-card reveal reveal-delay-1">
+          <h3>Backend</h3>
+          <div class="skill-tags">
+            <span class="skill-tag primary">Python</span>
+            <span class="skill-tag primary">FastAPI</span>
+            <span class="skill-tag">Flask</span>
+            <span class="skill-tag">REST API</span>
+            <span class="skill-tag">PyQt6</span>
+            <span class="skill-tag">QThread</span>
+            <span class="skill-tag">MVC Architecture</span>
+            <span class="skill-tag">Biometric Hardware</span>
+            <span class="skill-tag">ZKTeco</span>
+          </div>
+        </div>
+        <div class="skill-card reveal reveal-delay-2">
+          <h3>Automation</h3>
+          <div class="skill-tags">
+            <span class="skill-tag primary">n8n</span>
+            <span class="skill-tag">Workflow Automation</span>
+            <span class="skill-tag">AI Agent Pipelines</span>
+            <span class="skill-tag">Drag &amp; Drop Automation</span>
+          </div>
+        </div>
+        <div class="skill-card reveal reveal-delay-2">
+          <h3>Database</h3>
+          <div class="skill-tags">
+            <span class="skill-tag primary">SQLite3</span>
+            <span class="skill-tag primary">PostgreSQL</span>
+            <span class="skill-tag primary">Redis</span>
+            <span class="skill-tag primary">Qdrant</span>
+            <span class="skill-tag">Vector Search</span>
+          </div>
+        </div>
+        <div class="skill-card reveal reveal-delay-3">
+          <h3>Frontend</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">HTML</span>
+            <span class="skill-tag">CSS</span>
+            <span class="skill-tag">Tailwind CSS</span>
+            <span class="skill-tag">Responsive Design</span>
+          </div>
+        </div>
+        <div class="skill-card reveal reveal-delay-3">
+          <h3>Tools &amp; Version Control</h3>
+          <div class="skill-tags">
+            <span class="skill-tag primary">Git</span>
+            <span class="skill-tag primary">GitHub</span>
+            <span class="skill-tag">Postman</span>
+            <span class="skill-tag">VS Code</span>
+            <span class="skill-tag">Windsurf</span>
+            <span class="skill-tag">Claude AI</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
-);
 
-const Contact = () => (
-  <section id="contact" className="block">
-    <div className="container">
-      <SectionHead num="06" em="Get in touch" sub="let's build" />
-      <div className="contact-grid">
-        <Reveal delay={1} className="contact-pitch">
+  <!-- EXPERIENCE -->
+  <section id="work" class="block">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-num">03 —</span>
+        <h2>Work <em>experience</em></h2>
+        <span class="section-sub">where I've shipped</span>
+      </div>
+      <div class="exp-card reveal reveal-delay-1">
+        <div class="exp-header">
+          <div>
+            <div class="exp-title">Full Stack Developer</div>
+            <div class="exp-company">Mozzine Technologies · On-site</div>
+          </div>
+          <div class="exp-period">Oct 2025 — April 2026</div>
+        </div>
+        <ul class="exp-bullets">
+          <li><strong>Built a desktop biometric attendance application</strong> using Python and PyQt6 with MVC architecture, integrating ZKTeco devices and SQLite3 for attendance data processing.</li>
+          <li><strong>Built secure FastAPI-based REST APIs</strong> for biometric device communication, authentication, and data synchronization.</li>
+          <li><strong>Integrated and supported multiple ZKTeco biometric device models</strong> — fingerprint, face recognition, palm recognition, and RFID card readers.</li>
+          <li>Delivered direct biometric customer support: diagnosed and resolved fingerprint/face recognition errors, device connectivity, enrollment, synchronization failures, and deployment issues for clients.</li>
+          <li><strong>Built n8n workflow automations</strong> for operational task streamlining and data pipeline orchestration.</li>
+          <li><strong>Implemented multi-threaded data sync workers (QThread)</strong> for device communication without UI blocking.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="block">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-num">04 —</span>
+        <h2>Selected <em>projects</em></h2>
+        <span class="section-sub">things I've built</span>
+      </div>
+
+      <div class="proj-category reveal reveal-delay-1">
+        <h3 class="proj-cat-head">AI RAG Agents &amp; Chatbots</h3>
+        <div class="proj-cat-stack">Python · FastAPI · Claude AI · n8n · Vector DB</div>
+        <div class="proj-grid">
+          <div class="proj-card"><div class="proj-name">Customer Support RAG Agent <span class="proj-badge">RAG</span></div><p class="proj-desc">Automated query resolution via LLM + vector search over knowledge base documents, triggered through n8n pipelines.</p></div>
+          <div class="proj-card"><div class="proj-name">Document Q&amp;A RAG Agent <span class="proj-badge">RAG</span></div><p class="proj-desc">Users upload PDFs and documents to query them in natural language for internal policy lookups and manual searches.</p></div>
+          <div class="proj-card"><div class="proj-name">Product Knowledge RAG Bot <span class="proj-badge">RAG</span></div><p class="proj-desc">Trained on product catalogs and FAQs to handle pre-sales and technical queries without human intervention.</p></div>
+          <div class="proj-card"><div class="proj-name">Multi-Source RAG Agent <span class="proj-badge">RAG</span></div><p class="proj-desc">Aggregates data from databases, APIs, and documents to answer complex business queries in real time.</p></div>
+          <div class="proj-card"><div class="proj-name">Multi-Channel AI Chatbots <span class="proj-badge">CHAT</span></div><p class="proj-desc">General-purpose chatbots with conversation memory deployed across web and WhatsApp channels.</p></div>
+        </div>
+      </div>
+
+      <div class="proj-category reveal reveal-delay-2">
+        <h3 class="proj-cat-head">Hardware &amp; Backend Systems</h3>
+        <div class="proj-cat-stack">Python · PyQt6 · FastAPI · ZKTeco · SQLite3</div>
+        <div class="proj-grid">
+          <div class="proj-card"><div class="proj-name">Biometric Attendance System <span class="proj-badge">PROD</span></div><p class="proj-desc">Production desktop application with ZKTeco fingerprint, face, palm, and RFID integration, MVC architecture, and multi-threaded sync workers.</p></div>
+        </div>
+      </div>
+
+      <div class="proj-category reveal reveal-delay-3">
+        <h3 class="proj-cat-head">Python Automation &amp; Domain Bots</h3>
+        <div class="proj-cat-stack">Python · n8n · LLM APIs</div>
+        <div class="proj-grid">
+          <div class="proj-card"><div class="proj-name">Medical &amp; Healthcare Info Bot <span class="proj-badge">RAG</span></div><p class="proj-desc">RAG agent providing accurate health and medical information from trusted knowledge base sources.</p></div>
+          <div class="proj-card"><div class="proj-name">CSS &amp; PPSC Exam Prep Agent <span class="proj-badge">EDU</span></div><p class="proj-desc">Intelligent chatbot helping students prepare for CSS (Central Superior Services) and PPSC exams with topic-wise Q&amp;A and past paper analysis.</p></div>
+          <div class="proj-card"><div class="proj-name">Workflow Automation Scripts <span class="proj-badge">AUTO</span></div><p class="proj-desc">Python and n8n automation scripts streamlining repetitive operational tasks and improving workflow efficiency.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education" class="block">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-num">05 —</span>
+        <h2><em>Education</em></h2>
+        <span class="section-sub">academic background</span>
+      </div>
+      <div class="edu-list">
+        <div class="edu-item reveal reveal-delay-1">
+          <div>
+            <div class="edu-degree">Bachelor of Science in Computer Science</div>
+            <div class="edu-school">University of Narowal (UON)</div>
+          </div>
+          <div class="edu-period">Nov 2021 — May 2025</div>
+        </div>
+        <div class="edu-item reveal reveal-delay-2">
+          <div>
+            <div class="edu-degree">Intermediate (Pre-Engineering)</div>
+            <div class="edu-school">Royal College of Science, Narowal</div>
+          </div>
+          <div class="edu-period">May 2018 — Oct 2020</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="block">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-num">06 —</span>
+        <h2><em>Get in touch</em></h2>
+        <span class="section-sub">let's build</span>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-pitch reveal reveal-delay-1">
           Building something that needs <em>reliable backend systems</em>, <em>agentic AI</em>, or <em>hardware-software integration</em>?
-        </Reveal>
-        <Reveal delay={2} className="contact-cards">
-          {CONTACTS.map(c => (
-            <a key={c.label} href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener" className="contact-card">
-              <div>
-                <div className="ck-label">{c.label}</div>
-                <div className="ck-value">{c.value}</div>
-              </div>
-              <ExternalArrow/>
-            </a>
-          ))}
-          <a href={CV_FILE} download="Muhammad_Subhan_CV.pdf" className="contact-card">
-            <div>
-              <div className="ck-label">Resume</div>
-              <div className="ck-value">Download CV (PDF)</div>
-            </div>
-            <svg className="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
+        </div>
+        <div class="contact-cards reveal reveal-delay-2">
+          <a href="mailto:subhanmughal931@gmail.com" class="contact-card">
+            <div><div class="ck-label">Email</div><div class="ck-value">subhanmughal931@gmail.com</div></div>
+            <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
           </a>
-        </Reveal>
+          <a href="https://wa.me/923448261148" target="_blank" rel="noopener" class="contact-card">
+            <div><div class="ck-label">WhatsApp</div><div class="ck-value">+92 344 8261148</div></div>
+            <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
+          </a>
+          <a href="https://github.com/subhanmughal1" target="_blank" rel="noopener" class="contact-card">
+            <div><div class="ck-label">GitHub</div><div class="ck-value">@subhanmughal1</div></div>
+            <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/muhammad-subhan-4b2382376/" target="_blank" rel="noopener" class="contact-card">
+            <div><div class="ck-label">LinkedIn</div><div class="ck-value">in/muhammad-subhan</div></div>
+            <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
+          </a>
+          <a href="./cv/Muhammad_Subhan_CV.pdf" download="Muhammad_Subhan_CV.pdf" class="contact-card">
+            <div><div class="ck-label">Resume</div><div class="ck-value">Download CV (PDF)</div></div>
+            <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </a>
+        </div>
       </div>
     </div>
   </section>
-);
 
-const Footer = () => (
-  <footer>
-    <div className="container footer-row">
-      <div>© {new Date().getFullYear()} Muhammad Subhan</div>
-      <div>Built with React · Narowal, PK</div>
-    </div>
-  </footer>
-);
+</main>
 
-// ============================================================
-// APP
-// ============================================================
-const App = () => {
-  useEffect(() => {
-    const boot = document.getElementById('boot');
-    if (boot) {
-      boot.classList.add('hide');
-      setTimeout(() => boot.remove(), 500);
-    }
-  }, []);
-  return (
-    <React.Fragment>
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Experience />
-        <Projects />
-        <Education />
-        <Contact />
-      </main>
-      <Footer />
-    </React.Fragment>
-  );
-};
+<footer>
+  <div class="container footer-row">
+    <div id="footer-year"></div>
+    <div>Built with HTML, CSS &amp; JS · Narowal, PK</div>
+  </div>
+</footer>
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+<script>
+  document.getElementById('footer-year').textContent = '© ' + new Date().getFullYear() + ' Muhammad Subhan';
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls = document.querySelectorAll('.reveal');
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    revealEls.forEach(function (el) { el.classList.add('visible'); });
+  } else {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    revealEls.forEach(function (el) { observer.observe(el); });
+  }
 </script>
 
 </body>
