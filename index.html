@@ -398,6 +398,32 @@
   [data-theme="light"] .btn-download:hover { background: rgba(23,138,76,0.08); }
   [data-theme="light"] .skill-card.featured { background: linear-gradient(135deg, #fff 0%, rgba(217,80,26,0.05) 100%); }
   [data-theme="light"] .skill-card:hover, [data-theme="light"] .proj-card:hover { border-color: rgba(217,80,26,0.45); }
+
+  /* ICONS */
+  .skill-tag { display: inline-flex; align-items: center; gap: 7px; }
+  .skill-logo { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; filter: brightness(0) invert(1); opacity: 0.85; }
+  [data-theme="light"] .skill-logo { filter: brightness(0); opacity: 0.7; }
+  .skill-tag.primary .skill-logo { opacity: 1; }
+  .ic { width: 18px; height: 18px; flex-shrink: 0; color: var(--accent); }
+  .skill-card h3.has-ic::before { display: none; }
+  .proj-cat-head .ic { width: 20px; height: 20px; }
+  .contact-card > div:first-child { display: flex; align-items: center; gap: 14px; }
+  .contact-card .ic { width: 20px; height: 20px; color: var(--fg-muted); transition: color 0.2s; }
+  .contact-card:hover .ic { color: var(--accent); }
+
+  /* HERO PHOTO */
+  .hero-layout { display: grid; grid-template-columns: 1fr auto; gap: 56px; align-items: center; }
+  .hero-copy { min-width: 0; }
+  .hero-photo {
+    width: 260px; aspect-ratio: 1; border-radius: 18px; overflow: hidden;
+    border: 1px solid var(--line); background: var(--bg-card);
+    box-shadow: 0 0 0 5px var(--accent-soft), 0 18px 40px rgba(0,0,0,0.25);
+  }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+  @media (max-width: 860px) {
+    .hero-layout { grid-template-columns: 1fr; gap: 32px; }
+    .hero-photo { order: -1; width: 150px; }
+  }
 </style>
 </head>
 
@@ -427,6 +453,8 @@
   <!-- HERO -->
   <section class="hero">
     <div class="container">
+      <div class="hero-layout">
+      <div class="hero-copy">
       <div class="eyebrow reveal"><span class="live"></span> Available for opportunities</div>
       <h1 class="reveal reveal-delay-1">Python &amp; <em>AI&nbsp;Automation</em><br/>Engineer.</h1>
       <p class="hero-tagline reveal reveal-delay-2">
@@ -455,8 +483,11 @@
           subhanmughal931@gmail.com
         </a>
       </div>
+      </div>
+      <div class="hero-photo reveal reveal-delay-2"><img src="./profile.png" alt="Muhammad Subhan" width="260" height="260" onerror="this.parentElement.style.display='none'" /></div>
+      </div>
       <div class="meta-strip">
-        <div class="meta-item reveal reveal-delay-1"><div class="label">Role</div><div class="value">AI Developer</div></div>
+        <div class="meta-item reveal reveal-delay-1"><div class="label">Role</div><div class="value">Python &amp; AI Developer</div></div>
         <div class="meta-item reveal reveal-delay-2"><div class="label">Company</div><div class="value">PAC College of Accountancy</div></div>
         <div class="meta-item reveal reveal-delay-3"><div class="label">Location</div><div class="value">Lahore, Pakistan</div></div>
         <div class="meta-item reveal reveal-delay-4"><div class="label">Focus</div><div class="value">AI · Backend · Automation</div></div>
@@ -808,6 +839,64 @@
       var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       apply(next);
       try { localStorage.setItem('subhan-theme', next); } catch (e) {}
+    });
+  })();
+
+  /* ICONS */
+  (function () {
+    var P = {
+      cpu: '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/>',
+      server: '<rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/>',
+      workflow: '<rect x="3" y="3" width="8" height="8" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect x="13" y="13" width="8" height="8" rx="2"/>',
+      database: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>',
+      layout: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
+      tools: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+      finger: '<path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4M14 13.12c0 2.38 0 6.38-1 8.88M17.29 21.02c.12-.6.43-2.3.5-3.02M2 12a10 10 0 0 1 18-6M2 16h.01M21.8 16c.2-2 .131-5.354 0-6M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2M8.65 22c.21-.66.45-1.32.57-2M9 6.8a6 6 0 0 1 9 5.2v2"/>',
+      doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>',
+      box: '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/>',
+      mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+      chat: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+      github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
+      linkedin: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
+      file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/>'
+    };
+    function svg(k) {
+      var e = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      e.setAttribute('viewBox', '0 0 24 24'); e.setAttribute('fill', 'none'); e.setAttribute('stroke', 'currentColor');
+      e.setAttribute('stroke-width', '1.8'); e.setAttribute('stroke-linecap', 'round'); e.setAttribute('stroke-linejoin', 'round');
+      e.setAttribute('class', 'ic'); e.setAttribute('aria-hidden', 'true'); e.innerHTML = P[k]; return e;
+    }
+    // skill card headings
+    var H = [['AI', 'cpu'], ['Backend', 'server'], ['Automation', 'workflow'], ['Biometrics', 'finger'], ['Database', 'database'], ['Frontend', 'layout'], ['DevOps', 'box'], ['Tools', 'tools']];
+    document.querySelectorAll('.skill-card h3').forEach(function (h) {
+      var t = h.textContent.trim();
+      for (var i = 0; i < H.length; i++) if (t.indexOf(H[i][0]) === 0) { h.classList.add('has-ic'); h.insertBefore(svg(H[i][1]), h.firstChild); break; }
+    });
+    // project group headings
+    document.querySelectorAll('.proj-cat-head').forEach(function (h) {
+      var t = h.textContent, k = t.indexOf('RAG') > -1 ? 'cpu' : t.indexOf('Hardware') > -1 ? 'doc' : 'workflow';
+      h.insertBefore(svg(k), h.firstChild);
+    });
+    // contact cards
+    var C = { Email: 'mail', WhatsApp: 'chat', GitHub: 'github', LinkedIn: 'linkedin', Resume: 'file' };
+    document.querySelectorAll('.contact-card').forEach(function (c) {
+      var l = c.querySelector('.ck-label'); if (!l || !C[l.textContent.trim()]) return;
+      var d = c.firstElementChild, w = document.createElement('div');
+      while (d.firstChild) w.appendChild(d.firstChild);
+      d.appendChild(svg(C[l.textContent.trim()])); d.appendChild(w);
+    });
+    // brand logos on skill tags (monochrome, theme-aware via CSS filter)
+    var L = { 'LangChain': 'langchain', 'Claude AI': 'anthropic', 'Python': 'python', 'FastAPI': 'fastapi', 'Django': 'django', 'Flask': 'flask',
+      'n8n': 'n8n', 'Python Scripting': 'python', 'PostgreSQL': 'postgresql', 'MongoDB': 'mongodb', 'MySQL': 'mysql', 'SQLite3': 'sqlite',
+      'Redis': 'redis', 'Qdrant': 'qdrant', 'HTML': 'html5', 'CSS': 'css3', 'Tailwind CSS': 'tailwindcss', 'React.js': 'react', 'Next.js': 'nextdotjs',
+      'Docker': 'docker', 'Kubernetes': 'kubernetes', 'Git': 'git', 'GitHub': 'github', 'Postman': 'postman', 'VS Code': 'visualstudiocode',
+      'Windsurf': 'windsurf', 'PyQt6': 'qt' };
+    document.querySelectorAll('.skill-tag').forEach(function (t) {
+      var slug = L[t.textContent.trim()]; if (!slug) return;
+      var i = new Image(); i.className = 'skill-logo'; i.alt = ''; i.width = 14; i.height = 14; i.loading = 'lazy';
+      i.onerror = function () { i.remove(); };
+      i.src = 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/' + slug + '.svg';
+      t.insertBefore(i, t.firstChild);
     });
   })();
 </script>
